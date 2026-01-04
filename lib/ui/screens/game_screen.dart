@@ -1,39 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_the_best/ui/utils/sudoku_color.dart';
+import 'package:sudoku_the_best/models/game_state.dart';
+import 'package:sudoku_the_best/models/sudoku_board.dart';
+import 'package:sudoku_the_best/utils/sudoku_color.dart';
+import 'package:sudoku_the_best/ui/widgets/custom_info_tile.dart';
+import 'package:sudoku_the_best/ui/widgets/custom_circle_button.dart';
+import 'package:sudoku_solver_generator/sudoku_solver_generator.dart';
+import 'dart:async';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  final Difficulty difficulty;
+
+  const GameScreen({super.key, required this.difficulty});
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
-  int mistakes = 2;
-  int selectedRow = -1;
-  int selectedCol = -1;
-  int? selectedNumber;
-  bool isNoteMode = false;
-  String elapsedTime = "12:01";
+  late GameState gameState;
+  late SudokuBoard sudokuBoard;
 
-  List<List<int>> board = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9],
-  ];
+  @override
+  void initState() {
+    super.initState();
+    gameState = GameState(difficulty: widget.difficulty);
+    generateNewPuzzle();
+  }
 
-  Color _getBackgroundColor(int row, int col) {
+  @override
+  void dispose() {
+    gameState.stopTimer();
+    super.dispose();
+  }
+
+  void generateNewPuzzle() {
+    final sudokuGenerator = SudokuGenerator(emptySquares: gameState.difficulty.emptySquares, uniqueSolution: true);
+
+    setState(() {
+      sudokuBoard = SudokuBoard(
+        board: sudokuGenerator.newSudoku,
+        solvedBoard: sudokuGenerator.newSudokuSolved,
+      );
+
+      sudokuBoard.markInitialCell();
+
+      gameState.reset();
+      gameState.startTimer(() => setState(() {}));
+    });
+  }
+
+  Color getBackgroundColor(int row, int col) {
     int blockRow = row ~/ 3;
     int blockCol = col ~/ 3;
     bool isAlternateBlock = (blockRow + blockCol) % 2 == 0;
 
-    if (selectedRow == row && selectedCol == col) {
+    if (gameState.isCellSelected(row, col)) {
       return SudokuColors.boardFocusBackground;
     }
 
@@ -42,14 +63,18 @@ class _GameScreenState extends State<GameScreen> {
         : SudokuColors.boardSecondBackground;
   }
 
-  Color _getTextColor(int row, int col) {
-    if (selectedRow == row && selectedCol == col) {
+  Color getTextColor(int row, int col) {
+    if (gameState.isCellSelected(row, col)) {
       return SudokuColors.focusTextColor;
     }
-    return SudokuColors.textColor;
+
+    if (sudokuBoard.isCellInitial(row, col)) {
+      return SudokuColors.textColor;
+    }
+    return SudokuColors.numberSelectColor;
   }
 
-  Border _getCellBorder(int row, int col) {
+  Border getCellBorder(int row, int col) {
     return Border(
       top: BorderSide(
         color: row % 3 == 0
@@ -64,84 +89,97 @@ class _GameScreenState extends State<GameScreen> {
         width: col % 3 == 0 ? 2.0 : 0.5,
       ),
       right: BorderSide(
-        color: col == 8
-            ? SudokuColors.mainBorder
-            : Colors.transparent,
+        color: col == 8 ? SudokuColors.mainBorder : Colors.transparent,
         width: col == 8 ? 2.0 : 0,
       ),
       bottom: BorderSide(
-        color: row == 8
-            ? SudokuColors.mainBorder
-            : Colors.transparent,
+        color: row == 8 ? SudokuColors.mainBorder : Colors.transparent,
         width: row == 8 ? 2.0 : 0,
       ),
     );
   }
 
-  Border _getNumberCellBorder(int index) {
+  Border getNumberCellBorder(int index) {
     const sideBorder = BorderSide(color: SudokuColors.lightBorder, width: 1.5);
     return Border(
-      left: index == 0 ? sideBorder : BorderSide.none,
-      right: sideBorder,
-      top: sideBorder,
-      bottom: sideBorder
-    );
+        left: index == 0 ? sideBorder : BorderSide.none,
+        right: sideBorder,
+        top: sideBorder,
+        bottom: sideBorder);
   }
 
-  void _onCellTap(int row, int col) {
-    final isSameCell = selectedRow == row && selectedCol == col;
+  void onCellTap(int row, int col) {
+    final isSameCell = gameState.isCellSelected(row, col);
     setState(() {
       if (isSameCell) {
-        _clearSelection();
-      } else if (selectedNumber != null) {
-        _tryPlaceNumber(row, col, selectedNumber!);
-        selectedNumber = null;
+        gameState.clearSelection();
+      } else if (gameState.selectedNumber != null) {
+        tryPlaceNumber(row, col, gameState.selectedNumber!);
+        gameState.selectedNumber = null;
       } else {
-        _selectCell(row, col);
+        gameState.selectCell(row, col);
       }
     });
   }
 
-  void _onNumberSelect(int number) {
-    final isCellSelected = selectedRow != -1 && selectedCol != -1;
+  void onNumberSelect(int number) {
     setState(() {
-      if (selectedNumber == number) {
-        selectedNumber = null;
-      } else if (isCellSelected) {
-        _tryPlaceNumber(selectedRow, selectedCol, number);
-        if (board[selectedRow][selectedCol] != 0) selectedNumber = number;
-        _clearSelection();
+      if (gameState.selectedNumber == number) {
+        gameState.selectedNumber = null;
+      } else if (gameState.hasSelectedCell) {
+        tryPlaceNumber(gameState.selectedRow, gameState.selectedCol, number);
+        if (sudokuBoard.board[gameState.selectedRow][gameState.selectedCol] != 0) {
+          gameState.selectedNumber = number;
+        }
+        gameState.clearSelection();
       } else {
-        selectedNumber = number;
+        gameState.selectedNumber = number;
       }
     });
   }
 
-  void _tryPlaceNumber(int row, int col, int number) {
-    if (board[row][col] == 0) {
-      board[row][col] = number;
+  void tryPlaceNumber(int row, int col, int number) {
+    if (sudokuBoard.isCellEmpty(row, col)) {
+      if (gameState.isNoteMode) {
+        setState(() {
+          sudokuBoard.addNote(row, col, number);
+        });
+      } else {
+        if (sudokuBoard.isCorrectNumber(row, col, number)) {
+          int earnedScore = sudokuBoard.calculateCellScore(row, col);
+          sudokuBoard.placeNumber(row, col, number);
+          gameState.totalScore += earnedScore;
+          sudokuBoard.cleanupNotesAndMistakes(row, col, number);
+          if (sudokuBoard.isPuzzleComplete()) {
+            gameState.isWin = true;
+            Future.delayed(const Duration(milliseconds: 300), () {
+              showGameOverDialog();
+            });
+          }
+        } else {
+          sudokuBoard.addMistake(row, col, number);
+          gameState.mistake++;
+          if (gameState.mistake >= 3) {
+            Future.delayed(const Duration(milliseconds: 300), () {
+              showGameOverDialog();
+            });
+          }
+        }
+      }
     } else {
-      _selectCell(row, col);
+      gameState.selectCell(row, col);
     }
   }
 
-  void _toggleNoteMode() {
+  void toggleNoteMode() {
     setState(() {
-      isNoteMode = !isNoteMode;
+      gameState.isNoteMode = !gameState.isNoteMode;
     });
   }
 
-  void _selectCell(int row, int col) {
+  void toggleTheme() {
     setState(() {
-      selectedRow = row;
-      selectedCol = col;
-    });
-  }
-
-  void _clearSelection() {
-    setState(() {
-      selectedRow = -1;
-      selectedCol = -1;
+      gameState.isDarkMode = !gameState.isDarkMode;
     });
   }
 
@@ -167,36 +205,16 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: SudokuColors.containerBackground,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.access_time,
-                              color: SudokuColors.textColor,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              elapsedTime,
-                              style: const TextStyle(
-                                color: SudokuColors.textColor,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
+                      CustomInfoTile(
+                        icon: Icons.access_time,
+                        text: gameState.elapsedTime,
                       ),
                       const SizedBox(width: 12),
-                      // Mistakes container
+                      CustomInfoTile(
+                        icon: Icons.electric_bolt,
+                        text: gameState.totalScore.toString(),
+                      ),
+                      const SizedBox(width: 12),
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -206,15 +224,15 @@ class _GameScreenState extends State<GameScreen> {
                         child: Row(
                           children: List.generate(3, (index) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 3),
                               child: Container(
                                 width: 26,
                                 height: 26,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: SudokuColors.mistakeBackground
-                                ),
-                                child: index < mistakes
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: SudokuColors.mistakeBackground),
+                                child: index < gameState.mistake
                                     ? const Icon(
                                         Icons.close,
                                         color: SudokuColors.textColor,
@@ -232,7 +250,6 @@ class _GameScreenState extends State<GameScreen> {
                 ],
               ),
               const SizedBox(height: 24),
-
               AspectRatio(
                 aspectRatio: 1,
                 child: GridView.builder(
@@ -245,78 +262,38 @@ class _GameScreenState extends State<GameScreen> {
                   itemBuilder: (context, index) {
                     int row = index ~/ 9;
                     int col = index % 9;
-                    int value = board[row][col];
-                    
+                    int value = sudokuBoard.board[row][col];
+
                     return GestureDetector(
-                      onTap: () => _onCellTap(row, col),
+                      onTap: () => onCellTap(row, col),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _getBackgroundColor(row, col),
-                          border: _getCellBorder(row, col),
+                          color: getBackgroundColor(row, col),
+                          border: getCellBorder(row, col),
                         ),
-                        child: Center(
-                          child: value != 0
-                              ? Text(
-                                  value.toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: _getTextColor(row, col),
-                                  ),
-                                )
-                              : null,
-                        ),
+                        child: buildCellContent(row, col, value),
                       ),
                     );
                   },
                 ),
               ),
               const SizedBox(height: 24),
-      
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: SudokuColors.containerBackground,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.settings,
-                        color: SudokuColors.textColor,
-                        size: 24,
-                      ),
-                    ),
+                  CustomCircleButton(
+                    icon: gameState.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                    isActive: false,
+                    onTap: toggleTheme,
                   ),
-                  GestureDetector(
-                    onTap: _toggleNoteMode,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: isNoteMode
-                            ? SudokuColors.boardFocusBackground
-                            : SudokuColors.containerBackground,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.edit,
-                        color: isNoteMode
-                            ? SudokuColors.focusTextColor
-                            : SudokuColors.textColor,
-                        size: 24,
-                      ),
-                    ),
+                  CustomCircleButton(
+                    icon: Icons.edit,
+                    isActive: gameState.isNoteMode,
+                    onTap: toggleNoteMode,
                   ),
                 ],
               ),
               const SizedBox(height: 24),
-      
-              // Number selection grid
               AspectRatio(
                 aspectRatio: 9,
                 child: GridView.builder(
@@ -328,16 +305,16 @@ class _GameScreenState extends State<GameScreen> {
                   itemCount: 9,
                   itemBuilder: (context, index) {
                     int number = index + 1;
-                    bool isSelected = selectedNumber == number;
-      
+                    bool isSelected = gameState.selectedNumber == number;
+
                     return GestureDetector(
-                      onTap: () => _onNumberSelect(number),
+                      onTap: () => onNumberSelect(number),
                       child: Container(
                         decoration: BoxDecoration(
                           color: isSelected
                               ? SudokuColors.boardFocusBackground
                               : SudokuColors.boardBackground,
-                          border: _getNumberCellBorder(index),
+                          border: getNumberCellBorder(index),
                         ),
                         child: Center(
                           child: Text(
@@ -360,6 +337,136 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildCellContent(int row, int col, int value) {
+    final isCellSolved = value != 0;
+    if (isCellSolved) {
+      return Center(
+        child: Text(
+          value.toString(),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: getTextColor(row, col),
+          ),
+        ),
+      );
+    }
+
+    Set<int> cellNotes = sudokuBoard.notes[row][col];
+    Set<int> cellMistakes = sudokuBoard.mistakes[row][col];
+
+    if (cellNotes.isEmpty && cellMistakes.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1,
+      ),
+      itemCount: 9,
+      itemBuilder: (context, index) {
+        int number = index + 1;
+        bool isNoted = cellNotes.contains(number);
+        bool isMistake = cellMistakes.contains(number);
+
+        if (!isNoted && !isMistake) {
+          return const SizedBox.shrink();
+        }
+
+        return Center(
+          child: Text(
+            number.toString(),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: isMistake
+                  ? SudokuColors.numberSelectColor
+                  : SudokuColors.textColor,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void showGameOverDialog() {
+    gameState.stopTimer();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            gameState.isWin ? 'Congratulations!' : 'Game Over!',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: SudokuColors.textColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 16,
+            children: [
+              Text(
+                gameState.isWin
+                    ? 'You Completed the Puzzle Successfully!'
+                    : 'You Made 3 Mistakes. Try Again, Better Luck Next Time!',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: SudokuColors.textColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'Final Score : ${gameState.totalScore.toString()}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: SudokuColors.textColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'Solving Duration : ${gameState.elapsedTime}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: SudokuColors.textColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  generateNewPuzzle();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: SudokuColors.boardFocusBackground,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  'Play Again',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
