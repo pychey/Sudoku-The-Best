@@ -1,21 +1,21 @@
-import 'package:sudoku_the_best/domain/entities/player_profile.dart';
-import 'package:sudoku_the_best/domain/enums/difficulty_enum.dart';
+import 'package:sudoku_the_best/models/entities/player_profile.dart';
+import 'package:sudoku_the_best/models/enums/difficulty_enum.dart';
 
-class PlayerProfileModel {
+class PlayerProfileDto {
   final Map<String, int> gamesPlayed;
   final Map<String, int> gamesCompleted;
   final Map<String, int> perfectWins;
   final Map<String, int> bestTimes;
 
-  PlayerProfileModel({
+  PlayerProfileDto({
     required this.gamesPlayed,
     required this.gamesCompleted,
     required this.perfectWins,
     required this.bestTimes,
   });
 
-  factory PlayerProfileModel.fromEntity(PlayerProfile profile) {
-    return PlayerProfileModel(
+  factory PlayerProfileDto.fromEntity(PlayerProfile profile) {
+    return PlayerProfileDto(
       gamesPlayed: _encode(profile.gamesPlayed),
       gamesCompleted: _encode(profile.gamesCompleted),
       perfectWins: _encode(profile.perfectWins),
@@ -32,8 +32,8 @@ class PlayerProfileModel {
     );
   }
 
-  factory PlayerProfileModel.fromJson(Map<String, dynamic> json) {
-    return PlayerProfileModel(
+  factory PlayerProfileDto.fromJson(Map<String, dynamic> json) {
+    return PlayerProfileDto(
       gamesPlayed: Map<String, int>.from(json['gamesPlayed']),
       gamesCompleted: Map<String, int>.from(json['gamesCompleted']),
       perfectWins: Map<String, int>.from(json['perfectWins']),

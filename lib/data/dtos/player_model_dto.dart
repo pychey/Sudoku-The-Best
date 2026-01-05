@@ -1,25 +1,25 @@
-import '../../domain/entities/player.dart';
-import 'player_profile_model.dart';
+import '../../models/entities/player.dart';
+import 'player_profile_dto.dart';
 
-class PlayerModel {
+class PlayerDto {
   final String playerId;
   final String username;
   final List<String> friendIds;
-  final PlayerProfileModel profile;
+  final PlayerProfileDto profile;
 
-  PlayerModel({
+  PlayerDto({
     required this.playerId,
     required this.username,
     required this.friendIds,
     required this.profile,
   });
 
-  factory PlayerModel.fromEntity(Player player) {
-    return PlayerModel(
+  factory PlayerDto.fromEntity(Player player) {
+    return PlayerDto(
       playerId: player.playerId,
       username: player.username,
       friendIds: player.friendIds,
-      profile: PlayerProfileModel.fromEntity(player.profile),
+      profile: PlayerProfileDto.fromEntity(player.profile),
     );
   }
 
@@ -32,12 +32,12 @@ class PlayerModel {
     );
   }
 
-  factory PlayerModel.fromJson(Map<String, dynamic> json) {
-    return PlayerModel(
+  factory PlayerDto.fromJson(Map<String, dynamic> json) {
+    return PlayerDto(
       playerId: json['id'],
       username: json['username'],
       friendIds: List<String>.from(json['friendIds']),
-      profile: PlayerProfileModel.fromJson(json['profile']),
+      profile: PlayerProfileDto.fromJson(json['profile']),
     );
   }
 

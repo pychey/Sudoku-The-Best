@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_the_best/ui/pages/home/home.dart';
+import 'package:sudoku_the_best/ui/screens/home_screen.dart';
 
 void main() {
   runApp(const SudokuApp());
-  runApp(const SudokuApp());
 }
 
-class SudokuApp extends StatelessWidget {
-  const SudokuApp({super.key});
 class SudokuApp extends StatelessWidget {
   const SudokuApp({super.key});
 

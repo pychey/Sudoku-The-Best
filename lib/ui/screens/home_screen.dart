@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/data/repository/player_repository.dart';
-import 'package:sudoku_the_best/domain/entities/player.dart';
-import 'package:sudoku_the_best/ui/pages/home/friend_tab.dart';
-import 'package:sudoku_the_best/ui/pages/home/home_tab.dart';
-import 'package:sudoku_the_best/ui/pages/home/profile_tab.dart';
+import 'package:sudoku_the_best/models/entities/player.dart';
+import 'package:sudoku_the_best/ui/tabs/friend_tab.dart';
+import 'package:sudoku_the_best/ui/tabs/home_tab.dart';
+import 'package:sudoku_the_best/ui/tabs/profile_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

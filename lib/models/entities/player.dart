@@ -1,4 +1,4 @@
-import 'package:sudoku_the_best/domain/entities/player_profile.dart';
+import 'package:sudoku_the_best/models/entities/player_profile.dart';
 
 class Player {
   final String playerId;

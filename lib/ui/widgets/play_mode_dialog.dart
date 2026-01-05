@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../pages/game_page.dart';
+import 'package:sudoku_the_best/models/game_state.dart';
+import 'package:sudoku_the_best/ui/screens/game_screen.dart';
 
 void showPlayModeDialog(BuildContext context) {
   showDialog(
@@ -29,7 +30,7 @@ Widget _modeButton(BuildContext context, String mode) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => GamePage(difficulty: mode),
+              builder: (_) => GameScreen(difficulty: Difficulty.hard),
             ),
           );
         },

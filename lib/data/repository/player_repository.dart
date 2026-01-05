@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:sudoku_the_best/data/models/player_model.dart';
-import 'package:sudoku_the_best/domain/entities/player.dart';
+import 'package:sudoku_the_best/data/dtos/player_model_dto.dart';
+import 'package:sudoku_the_best/models/entities/player.dart';
 
 class PlayerRepository {
   Future<Player?> loadPlayerById(String playerId) async {
@@ -19,7 +19,7 @@ class PlayerRepository {
 
     if (playerJson == null) return null;
     
-    return PlayerModel.fromJson(playerJson).toEntity();
+    return PlayerDto.fromJson(playerJson).toEntity();
   }
 
   Future<List<Player>> loadPlayersByIds(List<String> ids) async {

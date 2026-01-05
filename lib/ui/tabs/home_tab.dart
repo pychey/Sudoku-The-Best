@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_the_best/domain/entities/player.dart';
+import 'package:sudoku_the_best/models/entities/player.dart';
 import 'package:sudoku_the_best/ui/widgets/play_mode_dialog.dart';
 import 'package:sudoku_the_best/ui/widgets/duel_mode_dialog.dart';
 

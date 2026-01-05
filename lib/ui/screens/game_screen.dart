@@ -196,7 +196,9 @@ class _GameScreenState extends State<GameScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: const Icon(
                       Icons.arrow_back_ios_new,
                       color: SudokuColors.textColor,
@@ -237,7 +239,7 @@ class _GameScreenState extends State<GameScreen> {
                                         Icons.close,
                                         color: SudokuColors.textColor,
                                         size: 18,
-                                        fontWeight: FontWeight.w600,
+                                        // fontWeight: FontWeight.w600,
                                       )
                                     : null,
                               ),
@@ -413,7 +415,7 @@ class _GameScreenState extends State<GameScreen> {
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            spacing: 16,
+            // spacing: 16,
             children: [
               Text(
                 gameState.isWin
