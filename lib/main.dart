@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/ui/screens/home_screen.dart';
+import 'package:sudoku_the_best/utils/sudoku_color.dart';
 
 void main() {
   runApp(const SudokuApp());
@@ -15,7 +16,7 @@ class SudokuApp extends StatelessWidget {
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
             elevation: WidgetStatePropertyAll(4),
-            backgroundColor: WidgetStatePropertyAll(Color(0XFF5A7ACD)),
+            backgroundColor: WidgetStatePropertyAll(SudokuColors.boardFocusBackground),
             foregroundColor: WidgetStatePropertyAll(Colors.white),
             padding: WidgetStatePropertyAll(
               EdgeInsets.symmetric(horizontal: 12, vertical: 12),

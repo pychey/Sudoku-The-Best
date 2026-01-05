@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'play_mode_dialog.dart';
 
-void showDuelModeDialog(
-  BuildContext context, {
-  required VoidCallback onFriendSelected,
-}) {
-  showDialog(
+enum DuelMode { online, friend }
+
+Future<DuelMode?> showDuelModeDialog(BuildContext context) {
+  return showDialog<DuelMode>(
     context: context,
     builder: (_) => AlertDialog(
       title: const Text('Play Duel'),
@@ -15,18 +13,12 @@ void showDuelModeDialog(
           _duelButton(
             context,
             'Online',
-            () {
-              Navigator.pop(context);
-              showPlayModeDialog(context);
-            },
+            () => Navigator.pop(context, DuelMode.online),
           ),
           _duelButton(
             context,
             'Friend',
-            () {
-              Navigator.pop(context);
-              onFriendSelected();
-            },
+            () => Navigator.pop(context, DuelMode.friend),
           ),
         ],
       ),

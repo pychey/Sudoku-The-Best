@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_the_best/models/entities/player.dart';
-import 'package:sudoku_the_best/ui/widgets/play_mode_dialog.dart';
+import 'package:sudoku_the_best/models/player.dart';
 import 'package:sudoku_the_best/ui/widgets/duel_mode_dialog.dart';
 
 class HomeTab extends StatelessWidget {
-  final VoidCallback onGoToFriends;
+  final VoidCallback onPlaySolo;
+  final void Function(DuelMode mode) onPlayDuel;
   final Player player;
 
   const HomeTab({
     super.key,
-    required this.onGoToFriends,
+    required this.onPlaySolo,
+    required this.onPlayDuel,
     required this.player 
   });
 
@@ -84,16 +85,18 @@ class HomeTab extends StatelessWidget {
           PlayButton(
             title: 'Play Solo',
             subtitle: 'Classic Sudoku',
-            onPressed: () => showPlayModeDialog(context),
+            onPressed: () => onPlaySolo(),
           ),
           const SizedBox(height: 16),
           PlayButton(
             title: 'Play Duel',
             subtitle: 'Play With Friends',
-            onPressed: () => showDuelModeDialog(
-              context,
-              onFriendSelected: onGoToFriends,
-            ),
+            onPressed: () async {
+              final mode = await showDuelModeDialog(context);
+              if (mode != null){
+                onPlayDuel(mode);
+              }
+            },
           ),
         ],
       ),

@@ -1,4 +1,4 @@
-import '../../models/entities/player.dart';
+import '../../models/player.dart';
 import 'player_profile_dto.dart';
 
 class PlayerDto {

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 enum Difficulty {
-  easy(name: 'Easy', emptySquares: 27),
-  medium(name: 'Medium', emptySquares: 36),
-  hard(name: 'Hard', emptySquares: 54);
+  easy(name: 'Easy', emptySquares: 1),
+  medium(name: 'Medium', emptySquares: 1),
+  hard(name: 'Hard', emptySquares: 1);
+
+  // easy(name: 'Easy', emptySquares: 27),
+  // medium(name: 'Medium', emptySquares: 36),
+  // hard(name: 'Hard', emptySquares: 54);
 
   final String name;
   final int emptySquares;

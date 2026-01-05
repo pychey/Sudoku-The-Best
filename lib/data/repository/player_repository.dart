@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:sudoku_the_best/data/dtos/player_model_dto.dart';
-import 'package:sudoku_the_best/models/entities/player.dart';
+import 'package:sudoku_the_best/data/dtos/player_dto.dart';
+import 'package:sudoku_the_best/models/player.dart';
+
+String path = 'lib/data/database/players.json';
 
 class PlayerRepository {
   Future<Player?> loadPlayerById(String playerId) async {
     final jsonString =
-        await rootBundle.loadString('assets/database/players.json');
+        await rootBundle.loadString(path);
 
-    // print(jsonString);
+    print(jsonString);
     final jsonData = json.decode(jsonString);
     final players = (jsonData['players'] as List?) ?? [];
 

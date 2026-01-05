@@ -1,40 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:sudoku_the_best/models/game_state.dart';
-import 'package:sudoku_the_best/ui/screens/game_screen.dart';
+import 'package:sudoku_the_best/models/game_state.dart'; 
 
-void showPlayModeDialog(BuildContext context) {
-  showDialog(
+Future<Difficulty?> showPlayModeDialog(BuildContext context) {
+  return showDialog<Difficulty>(
     context: context,
     builder: (_) => AlertDialog(
       title: const Text('Select Difficulty'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _modeButton(context, 'Easy'),
-          _modeButton(context, 'Medium'),
-          _modeButton(context, 'Hard'),
+          _modeButton(context, Difficulty.easy),
+          _modeButton(context, Difficulty.medium),
+          _modeButton(context, Difficulty.hard),
         ],
       ),
     ),
   );
 }
 
-Widget _modeButton(BuildContext context, String mode) {
+
+Widget _modeButton(BuildContext context, Difficulty difficulty) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6),
     child: SizedBox(
       width: double.infinity, 
       child: ElevatedButton(
         onPressed: () {
-          Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => GameScreen(difficulty: Difficulty.hard),
-            ),
-          );
+          Navigator.pop(context, difficulty); 
         },
-        child: Text(mode),
+        child: Text(difficulty.name),
       ),
     ),
   );

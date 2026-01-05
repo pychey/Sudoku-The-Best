@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_the_best/models/game_result_data.dart'; 
 import 'package:sudoku_the_best/models/game_state.dart';
 import 'package:sudoku_the_best/models/sudoku_board.dart';
 import 'package:sudoku_the_best/utils/sudoku_color.dart';
@@ -197,7 +198,14 @@ class _GameScreenState extends State<GameScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, GameResultData(
+                        result: GameResult.quit,
+                        totalScore: gameState.totalScore,
+                        elapsedSeconds: gameState.elapsedSeconds,
+                        board: sudokuBoard.board,
+                        notes: sudokuBoard.notes,
+                        difficulty: gameState.difficulty,
+                      ));
                     },
                     child: const Icon(
                       Icons.arrow_back_ios_new,
@@ -446,25 +454,34 @@ class _GameScreenState extends State<GameScreen> {
             ],
           ),
           actions: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  generateNewPuzzle();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: SudokuColors.boardFocusBackground,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Return result to HomeScreen
+                    Navigator.of(context).pop(); // close dialog
+                    Navigator.pop(
+                      context,
+                      GameResultData(
+                        result: gameState.isWin ? GameResult.completed : GameResult.failed,
+                        difficulty: widget.difficulty,
+                        totalScore: gameState.totalScore,
+                        elapsedSeconds: gameState.elapsedSeconds,
+                      ),
+                    );
+                  },
+                  child: const Text('Back to Home'),
                 ),
-                child: const Text(
-                  'Play Again',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Just close dialog and restart game
+                    Navigator.of(context).pop();
+                    generateNewPuzzle();
+                  },
+                  child: const Text('Play Again'),
                 ),
-              ),
+              ],
             ),
           ],
         );
