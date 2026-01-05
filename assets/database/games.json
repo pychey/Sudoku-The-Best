@@ -1,0 +1,11 @@
+{
+  "gameId": "game_123",
+  "playerId": "player_001",
+  "difficulty": "medium",
+  "status": "inProgress",
+  "board": {
+    "solutionGrid": [[5,3,4,6,7,8,9,1,2]],
+    "puzzleGrid": [[5,0,0,6,0,8,0,1,0]],
+    "fixedCells": [[true,false,false,true,false,true,false,true,false]]
+  }
+}

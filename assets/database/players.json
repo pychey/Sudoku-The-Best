@@ -1,0 +1,26 @@
+{
+  "players": [
+    {
+      "id": "p1",
+      "username": "JamJam",
+      "friendIds": ["p2"],
+      "profile": {
+        "gamesPlayed": { "easy": 10, "medium": 5, "hard": 2 },
+        "gamesCompleted": { "easy": 8, "medium": 3, "hard": 1 },
+        "perfectWins": { "easy": 2, "medium": 1, "hard": 0 },
+        "bestTimes": { "easy": 120, "medium": 300, "hard": 900 }
+      }
+    },
+    {
+      "id": "p2",
+      "username": "Bob",
+      "friendIds": ["p1"],
+      "profile": {
+        "gamesPlayed": { "easy": 5, "medium": 2, "hard": 0 },
+        "gamesCompleted": { "easy": 3, "medium": 1, "hard": 0 },
+        "perfectWins": { "easy": 1, "medium": 0, "hard": 0 },
+        "bestTimes": { "easy": 150, "medium": 400, "hard": 0 }
+      }
+    }
+  ]
+}
