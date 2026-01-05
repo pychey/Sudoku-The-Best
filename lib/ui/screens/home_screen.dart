@@ -129,10 +129,7 @@ class _HomePageState extends State<HomePage> {
       // appBar: AppBar(
       //   title:  const Text('Sudoku the BEST'),
       // ),
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        removeBottom: false, 
+      body: SafeArea(
         child: IndexedStack(
           index: _currentIndex,
           children: tabs,

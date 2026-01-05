@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sudoku_the_best/data/dtos/player_dto.dart';
 import 'package:sudoku_the_best/models/player.dart';
 
-String path = 'lib/data/database/players.json';
+String path = 'assets/database/players.json';
 
 class PlayerRepository {
   Future<Player?> loadPlayerById(String playerId) async {
