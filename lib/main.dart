@@ -15,7 +15,7 @@ class SudokuApp extends StatelessWidget {
       theme: ThemeData(
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
-            elevation: WidgetStatePropertyAll(4),
+            elevation: WidgetStatePropertyAll(2),
             backgroundColor: WidgetStatePropertyAll(SudokuColors.boardFocusBackground),
             foregroundColor: WidgetStatePropertyAll(Colors.white),
             padding: WidgetStatePropertyAll(

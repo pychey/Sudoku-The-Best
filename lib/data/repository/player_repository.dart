@@ -10,7 +10,6 @@ class PlayerRepository {
     final jsonString =
         await rootBundle.loadString(path);
 
-    print(jsonString);
     final jsonData = json.decode(jsonString);
     final players = (jsonData['players'] as List?) ?? [];
 

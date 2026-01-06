@@ -118,11 +118,7 @@ class _HomePageState extends State<HomePage> {
         player: currentPlayer!
       ),
       FriendTab(friends: friends),
-      ProfileTab(profile: currentPlayer?.profile ?? PlayerProfile(
-        gamesPlayed: {},
-        gamesCompleted: {},
-        bestTimes: {},
-      ))
+      ProfileTab(player: currentPlayer!)
     ];
 
     return Scaffold(
