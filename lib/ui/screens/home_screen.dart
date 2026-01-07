@@ -3,8 +3,10 @@ import 'package:sudoku_the_best/data/repository/player_repository.dart';
 import 'package:sudoku_the_best/models/game_result_data.dart';
 import 'package:sudoku_the_best/models/game_state.dart';
 import 'package:sudoku_the_best/models/player.dart';
-import 'package:sudoku_the_best/models/player_profile.dart'; 
-import 'package:sudoku_the_best/ui/screens/game_screen/game_screen.dart';
+import 'package:sudoku_the_best/models/player_profile.dart';
+import 'package:sudoku_the_best/ui/screens/matchmaking_screen/match_making_screen.dart';
+import 'package:sudoku_the_best/utils/socket_service.dart'; 
+import 'package:sudoku_the_best/ui/screens/game_screen/solo_game_screen.dart';
 import 'package:sudoku_the_best/ui/screens/home_tabs/friend_tab.dart';
 import 'package:sudoku_the_best/ui/screens/home_tabs/home_tab.dart';
 import 'package:sudoku_the_best/ui/screens/home_tabs/profile_tab.dart';
@@ -22,11 +24,13 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   Player? currentPlayer;
   List<Player> friends = [];
+  final SocketService socketService = SocketService();
 
   @override
   void initState() {
     super.initState();
     _loadPlayer();
+    socketService.connect();
   }
 
   Future<void> _loadPlayer() async {
@@ -51,7 +55,7 @@ class _HomePageState extends State<HomePage> {
     final resultData = await Navigator.push<GameResultData>(
       context,
       MaterialPageRoute(
-        builder: (_) => GameScreen(difficulty: difficulty),
+        builder: (_) => SoloGameScreen(difficulty: difficulty),
       ),
     );
 
@@ -76,7 +80,7 @@ class _HomePageState extends State<HomePage> {
   void _handlePlayDuel(DuelMode mode) {
     switch (mode) {
       case DuelMode.online:
-        print('Lg online');
+        _handlePlayOnline(context);
         break;
       case DuelMode.friend:
         setState(() {
@@ -84,6 +88,21 @@ class _HomePageState extends State<HomePage> {
         });
         break;
     }
+  }
+
+  void _handlePlayOnline(BuildContext context) async {
+    final difficulty = await showPlayModeDialog(context);
+    if (difficulty == null || currentPlayer == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MatchMakingScreen(
+          difficulty: difficulty,
+          currentPlayer: currentPlayer!,
+        ),
+      ),
+    );
   }
 
   void _updateProfileAfterGame(Difficulty difficulty, bool isWin, int elapsedSeconds) {

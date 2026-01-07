@@ -8,16 +8,16 @@ import 'package:sudoku_the_best/ui/widgets/custom_circle_button.dart';
 import 'package:sudoku_solver_generator/sudoku_solver_generator.dart';
 import 'dart:async';
 
-class GameScreen extends StatefulWidget {
+class SoloGameScreen extends StatefulWidget {
   final Difficulty difficulty;
 
-  const GameScreen({super.key, required this.difficulty});
+  const SoloGameScreen({super.key, required this.difficulty});
 
   @override
-  State<GameScreen> createState() => _GameScreenState();
+  State<SoloGameScreen> createState() => _SoloGameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _SoloGameScreenState extends State<SoloGameScreen> {
   late GameState gameState;
   late SudokuBoard sudokuBoard;
 
@@ -193,161 +193,177 @@ class _GameScreenState extends State<GameScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context, GameResultData(
-                        result: GameResult.quit,
-                        totalScore: gameState.totalScore,
-                        elapsedSeconds: gameState.elapsedSeconds,
-                        board: sudokuBoard.board,
-                        notes: sudokuBoard.notes,
-                        difficulty: gameState.difficulty,
-                      ));
-                    },
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: SudokuColors.textColor,
-                      size: 24,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      CustomInfoTile(
-                        icon: Icons.access_time,
-                        text: gameState.elapsedTime,
-                      ),
-                      const SizedBox(width: 12),
-                      CustomInfoTile(
-                        icon: Icons.electric_bolt,
-                        text: gameState.totalScore.toString(),
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: SudokuColors.containerBackground,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: List.generate(3, (index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 3),
-                              child: Container(
-                                width: 26,
-                                height: 26,
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: SudokuColors.mistakeBackground),
-                                child: index < gameState.mistake
-                                    ? const Icon(
-                                        Icons.close,
-                                        color: SudokuColors.textColor,
-                                        size: 18,
-                                        // fontWeight: FontWeight.w600,
-                                      )
-                                    : null,
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              buildTopBar(context),
               const SizedBox(height: 24),
-              AspectRatio(
-                aspectRatio: 1,
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 9,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: 81,
-                  itemBuilder: (context, index) {
-                    int row = index ~/ 9;
-                    int col = index % 9;
-                    int value = sudokuBoard.board[row][col];
-
-                    return GestureDetector(
-                      onTap: () => onCellTap(row, col),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: getBackgroundColor(row, col),
-                          border: getCellBorder(row, col),
-                        ),
-                        child: buildCellContent(row, col, value),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              buildSudokuBoard(),
               const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomCircleButton(
-                    icon: gameState.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                    isActive: false,
-                    onTap: toggleTheme,
-                  ),
-                  CustomCircleButton(
-                    icon: Icons.edit,
-                    isActive: gameState.isNoteMode,
-                    onTap: toggleNoteMode,
-                  ),
-                ],
-              ),
+              buildSettingTool(),
               const SizedBox(height: 24),
-              AspectRatio(
-                aspectRatio: 9,
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 9,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: 9,
-                  itemBuilder: (context, index) {
-                    int number = index + 1;
-                    bool isSelected = gameState.selectedNumber == number;
-
-                    return GestureDetector(
-                      onTap: () => onNumberSelect(number),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? SudokuColors.boardFocusBackground
-                              : SudokuColors.boardBackground,
-                          border: getNumberCellBorder(index),
-                        ),
-                        child: Center(
-                          child: Text(
-                            number.toString(),
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: isSelected
-                                  ? SudokuColors.focusTextColor
-                                  : SudokuColors.numberSelectColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              buildNumberSelector(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget buildNumberSelector() {
+    return AspectRatio(
+              aspectRatio: 9,
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 9,
+                  childAspectRatio: 1,
+                ),
+                itemCount: 9,
+                itemBuilder: (context, index) {
+                  int number = index + 1;
+                  bool isSelected = gameState.selectedNumber == number;
+
+                  return GestureDetector(
+                    onTap: () => onNumberSelect(number),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? SudokuColors.boardFocusBackground
+                            : SudokuColors.boardBackground,
+                        border: getNumberCellBorder(index),
+                      ),
+                      child: Center(
+                        child: Text(
+                          number.toString(),
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: isSelected
+                                ? SudokuColors.focusTextColor
+                                : SudokuColors.numberSelectColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+  }
+
+  Widget buildSettingTool() {
+    return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomCircleButton(
+                  icon: gameState.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                  isActive: false,
+                  onTap: toggleTheme,
+                ),
+                CustomCircleButton(
+                  icon: Icons.edit,
+                  isActive: gameState.isNoteMode,
+                  onTap: toggleNoteMode,
+                ),
+              ],
+            );
+  }
+
+  Widget buildSudokuBoard() {
+    return AspectRatio(
+              aspectRatio: 1,
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 9,
+                  childAspectRatio: 1,
+                ),
+                itemCount: 81,
+                itemBuilder: (context, index) {
+                  int row = index ~/ 9;
+                  int col = index % 9;
+                  int value = sudokuBoard.board[row][col];
+
+                  return GestureDetector(
+                    onTap: () => onCellTap(row, col),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: getBackgroundColor(row, col),
+                        border: getCellBorder(row, col),
+                      ),
+                      child: buildCellContent(row, col, value),
+                    ),
+                  );
+                },
+              ),
+            );
+  }
+
+  Widget buildTopBar(BuildContext context) {
+    return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context, GameResultData(
+                      result: GameResult.quit,
+                      totalScore: gameState.totalScore,
+                      elapsedSeconds: gameState.elapsedSeconds,
+                      board: sudokuBoard.board,
+                      notes: sudokuBoard.notes,
+                      difficulty: gameState.difficulty,
+                    ));
+                  },
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: SudokuColors.textColor,
+                    size: 24,
+                  ),
+                ),
+                Row(
+                  children: [
+                    CustomInfoTile(
+                      icon: Icons.access_time,
+                      text: gameState.elapsedTime,
+                    ),
+                    const SizedBox(width: 12),
+                    CustomInfoTile(
+                      icon: Icons.electric_bolt,
+                      text: gameState.totalScore.toString(),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: SudokuColors.containerBackground,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: List.generate(3, (index) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 3),
+                            child: Container(
+                              width: 26,
+                              height: 26,
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: SudokuColors.mistakeBackground),
+                              child: index < gameState.mistake
+                                  ? const Icon(
+                                      Icons.close,
+                                      color: SudokuColors.textColor,
+                                      size: 18,
+                                      // fontWeight: FontWeight.w600,
+                                    )
+                                  : null,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
   }
 
   Widget buildCellContent(int row, int col, int value) {
