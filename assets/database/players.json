@@ -3,7 +3,7 @@
     {
       "id": "p1",
       "username": "JamJam",
-      "friendIds": ["p2"],
+      "friendIds": ["p2", "p3"],
       "profile": {
         "gamesPlayed": { "easy": 10, "medium": 5, "hard": 2 },
         "gamesCompleted": { "easy": 8, "medium": 3, "hard": 1 },
@@ -13,11 +13,51 @@
     {
       "id": "p2",
       "username": "Bob",
-      "friendIds": ["p1"],
+      "friendIds": ["p1", "p4"],
       "profile": {
         "gamesPlayed": { "easy": 5, "medium": 2, "hard": 0 },
         "gamesCompleted": { "easy": 3, "medium": 1, "hard": 0 },
         "bestTimes": { "easy": 150, "medium": 400, "hard": 0 }
+      }
+    },
+    {
+      "id": "p3",
+      "username": "PixelQueen",
+      "friendIds": ["p1", "p5"],
+      "profile": {
+        "gamesPlayed": { "easy": 20, "medium": 15, "hard": 7 },
+        "gamesCompleted": { "easy": 18, "medium": 12, "hard": 5 },
+        "bestTimes": { "easy": 95, "medium": 260, "hard": 780 }
+      }
+    },
+    {
+      "id": "p4",
+      "username": "NoobMaster",
+      "friendIds": ["p2"],
+      "profile": {
+        "gamesPlayed": { "easy": 3, "medium": 1, "hard": 0 },
+        "gamesCompleted": { "easy": 1, "medium": 0, "hard": 0 },
+        "bestTimes": { "easy": 210, "medium": 0, "hard": 0 }
+      }
+    },
+    {
+      "id": "p5",
+      "username": "SpeedRunner",
+      "friendIds": ["p3", "p6"],
+      "profile": {
+        "gamesPlayed": { "easy": 30, "medium": 25, "hard": 20 },
+        "gamesCompleted": { "easy": 30, "medium": 24, "hard": 18 },
+        "bestTimes": { "easy": 70, "medium": 180, "hard": 520 }
+      }
+    },
+    {
+      "id": "p6",
+      "username": "CasualCat",
+      "friendIds": ["p5"],
+      "profile": {
+        "gamesPlayed": { "easy": 8, "medium": 3, "hard": 1 },
+        "gamesCompleted": { "easy": 6, "medium": 2, "hard": 0 },
+        "bestTimes": { "easy": 160, "medium": 360, "hard": 0 }
       }
     }
   ]

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/models/player.dart';
 import 'package:sudoku_the_best/ui/widgets/duel_mode_dialog.dart';
+import 'package:sudoku_the_best/ui/widgets/player_avatar.dart';
 
 class HomeTab extends StatelessWidget {
   final VoidCallback onPlaySolo;
@@ -20,83 +21,45 @@ class HomeTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 44),
       
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.all(3), 
-                decoration: const BoxDecoration(
-                  color: Color(0XFF5A7ACD), 
-                  shape: BoxShape.circle,
-                ),
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor:  const Color(0XFFAFC0F0), 
-                  child: Text(
-                    player.username[0],
-                    style: const TextStyle(
-                      fontSize: 28, 
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF333333),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(player.username, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  Text('Placeholder', style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight, 
-                  child: IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {},
-                  ),
-                ),
+              PlayerAvatar(username: player.username, showOnline: true),
+              const SizedBox(height: 12),
+              Text(
+                player.username, 
+                style: const TextStyle(
+                  fontSize: 24, 
+                  fontWeight: FontWeight.bold
+                )
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          Expanded(
-            flex: 1, 
-            child: Center(
-              child: Card(
-                // elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Container(
-                  width: 180,
-                  height: double.infinity,
-                  alignment: Alignment.center,
-                  child: SizedBox()
-                ),
-              ),
-            )
-          ),
           const SizedBox(height: 20),
-          PlayButton(
-            title: 'Play Solo',
-            subtitle: 'Classic Sudoku',
-            onPressed: () => onPlaySolo(),
-          ),
-          const SizedBox(height: 16),
-          PlayButton(
-            title: 'Play Duel',
-            subtitle: 'Play With Friends',
-            onPressed: () async {
-              final mode = await showDuelModeDialog(context);
-              if (mode != null){
-                onPlayDuel(mode);
-              }
-            },
+          Column(
+            children: [
+              PlayButton(
+                icon: Icons.play_arrow_rounded,
+                title: 'Play Solo',
+                subtitle: 'Classic Sudoku',
+                onPressed: () => onPlaySolo(),
+              ),
+              const SizedBox(height: 24),
+              PlayButton(
+                icon: Icons.people_alt_rounded,
+                title: 'Play Duel',
+                subtitle: 'Play With Friends',
+                onPressed: () async {
+                  final mode = await showDuelModeDialog(context);
+                  if (mode != null){
+                    onPlayDuel(mode);
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -107,12 +70,14 @@ class HomeTab extends StatelessWidget {
 class PlayButton extends StatelessWidget {
   final String title;
   final String subtitle;
+  final IconData icon;
   final VoidCallback onPressed;
 
   const PlayButton({
     super.key,
     required this.title,
     required this.subtitle,
+    required this.icon,
     required this.onPressed,
   });
 
@@ -127,8 +92,8 @@ class PlayButton extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(
-              Icons.play_circle_outline_rounded,
+            Icon(
+              icon,
               size: 56,
             ),
             const SizedBox(width: 12),
@@ -142,7 +107,7 @@ class PlayButton extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 6),
                 Text(
                   subtitle,
                   style: const TextStyle(

@@ -1,4 +1,3 @@
-import '../../models/player.dart';
 import 'player_profile_dto.dart';
 
 class PlayerDto {
@@ -13,24 +12,6 @@ class PlayerDto {
     required this.friendIds,
     required this.profile,
   });
-
-  factory PlayerDto.fromEntity(Player player) {
-    return PlayerDto(
-      playerId: player.playerId,
-      username: player.username,
-      friendIds: player.friendIds,
-      profile: PlayerProfileDto.fromEntity(player.profile),
-    );
-  }
-
-  Player toEntity() {
-    return Player(
-      playerId: playerId,
-      username: username,
-      friendIds: friendIds,
-      profile: profile.toEntity(),
-    );
-  }
 
   factory PlayerDto.fromJson(Map<String, dynamic> json) {
     return PlayerDto(

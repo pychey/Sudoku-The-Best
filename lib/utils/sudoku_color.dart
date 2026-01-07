@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class SudokuColors {
   static const Color scaffoldBackground = Color(0xFFFCFCFC);
+  static const Color buttonColor = Color(0xFF696687);
   
   static const Color containerBackground = Color(0xFFE0E0E0);
 
@@ -17,4 +18,6 @@ class SudokuColors {
   
   static const Color mainBorder = Color(0xFF849AB2);
   static const Color lightBorder = Color(0xFFB5B9C2);
+
+  static const Color avatarBackground = Color(0xFF696687);
 }
