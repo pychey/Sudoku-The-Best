@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/models/player.dart';
-import 'package:sudoku_the_best/ui/screens/home_tabs/profile_tab.dart';
+import 'package:sudoku_the_best/ui/screens/home_screen/tabs/profile_tab.dart';
 import 'package:sudoku_the_best/ui/widgets/play_mode_dialog.dart';
 
 void showFriendProfile(BuildContext context, Player friend) {

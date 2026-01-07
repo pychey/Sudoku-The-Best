@@ -564,7 +564,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen> {
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: SudokuColors.numberSelectColor,
+              color: SudokuColors.textColor,
             ),
             textAlign: TextAlign.center,
           ),

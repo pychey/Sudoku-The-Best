@@ -6,12 +6,13 @@ import 'package:sudoku_the_best/models/player.dart';
 import 'package:sudoku_the_best/ui/screens/matchmaking_screen/match_making_screen.dart';
 import 'package:sudoku_the_best/utils/socket_service.dart'; 
 import 'package:sudoku_the_best/ui/screens/game_screen/solo_game_screen.dart';
-import 'package:sudoku_the_best/ui/screens/home_tabs/friend_tab.dart';
-import 'package:sudoku_the_best/ui/screens/home_tabs/home_tab.dart';
-import 'package:sudoku_the_best/ui/screens/home_tabs/profile_tab.dart';
+import 'package:sudoku_the_best/ui/screens/home_screen/tabs/friend_tab.dart';
+import 'package:sudoku_the_best/ui/screens/home_screen/tabs/home_tab.dart';
+import 'package:sudoku_the_best/ui/screens/home_screen/tabs/profile_tab.dart';
 import 'package:sudoku_the_best/ui/widgets/add_friend_dialog.dart';
 import 'package:sudoku_the_best/ui/widgets/duel_mode_dialog.dart';
 import 'package:sudoku_the_best/ui/widgets/play_mode_dialog.dart';
+import 'package:sudoku_the_best/utils/sudoku_color.dart';
 
 class HomePage extends StatefulWidget {
   final Player? initialPlayer;
@@ -35,7 +36,6 @@ class _HomePageState extends State<HomePage> {
     } else {
       _loadPlayer();
     }
-    _loadPlayer();
     socketService.connect();
   }
 
@@ -162,6 +162,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: SudokuColors.buttonColor,
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {

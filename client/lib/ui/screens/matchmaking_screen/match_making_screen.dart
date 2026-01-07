@@ -86,7 +86,7 @@ class _MatchMakingScreenState extends State<MatchMakingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const CircularProgressIndicator(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 48),
                 Text(
                   matchmakingMessage,
                   style: const TextStyle(
@@ -106,7 +106,7 @@ class _MatchMakingScreenState extends State<MatchMakingScreen> {
                 ElevatedButton(
                   onPressed: _leaveMatchmaking,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: SudokuColors.buttonColor,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
                       vertical: 12,

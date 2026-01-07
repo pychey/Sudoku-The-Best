@@ -28,7 +28,7 @@ class HomeTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               PlayerAvatar(username: player.username, showOnline: true),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               Text(
                 player.username, 
                 style: const TextStyle(

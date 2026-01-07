@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/data/repository/player_repository.dart';
 import 'package:sudoku_the_best/models/player.dart';
 import 'package:sudoku_the_best/models/player_profile.dart';
-import 'package:sudoku_the_best/ui/screens/home_screen.dart';
+import 'package:sudoku_the_best/ui/screens/home_screen/home_screen.dart';
+import 'package:sudoku_the_best/utils/sudoku_color.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -65,10 +66,10 @@ class _StartScreenState extends State<StartScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Enter your username',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                'Enter Your Username',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: SudokuColors.textColor),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               TextField(
                 controller: _usernameController,
                 decoration: const InputDecoration(

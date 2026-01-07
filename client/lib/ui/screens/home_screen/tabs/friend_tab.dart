@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/models/player.dart';
 import 'package:sudoku_the_best/ui/widgets/friend_profile.dart';
 import 'package:sudoku_the_best/ui/widgets/player_avatar.dart';
-import '../../widgets/play_mode_dialog.dart';
+import '../../../widgets/play_mode_dialog.dart';
 
 class FriendTab extends StatelessWidget {
   final List<Player> friends;

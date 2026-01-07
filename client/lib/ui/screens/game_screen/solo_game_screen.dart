@@ -352,7 +352,7 @@ class _SoloGameScreenState extends State<SoloGameScreen> {
                                       Icons.close,
                                       color: SudokuColors.textColor,
                                       size: 18,
-                                      // fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.w600,
                                     )
                                   : null,
                             ),
@@ -439,7 +439,7 @@ class _SoloGameScreenState extends State<SoloGameScreen> {
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            // spacing: 16,
+            spacing: 16,
             children: [
               Text(
                 gameState.isWin
@@ -475,8 +475,7 @@ class _SoloGameScreenState extends State<SoloGameScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Return result to HomeScreen
-                    Navigator.of(context).pop(); // close dialog
+                    Navigator.of(context).pop();
                     Navigator.pop(
                       context,
                       GameResultData(
@@ -487,11 +486,10 @@ class _SoloGameScreenState extends State<SoloGameScreen> {
                       ),
                     );
                   },
-                  child: const Text('Back to Home'),
+                  child: const Text('Back Home'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Just close dialog and restart game
                     Navigator.of(context).pop();
                     generateNewPuzzle();
                   },
