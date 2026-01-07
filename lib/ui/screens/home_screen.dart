@@ -3,16 +3,18 @@ import 'package:sudoku_the_best/data/repository/player_repository.dart';
 import 'package:sudoku_the_best/models/game_result_data.dart';
 import 'package:sudoku_the_best/models/game_state.dart';
 import 'package:sudoku_the_best/models/player.dart';
-import 'package:sudoku_the_best/models/player_profile.dart'; 
 import 'package:sudoku_the_best/ui/screens/game_screen/game_screen.dart';
 import 'package:sudoku_the_best/ui/screens/home_tabs/friend_tab.dart';
 import 'package:sudoku_the_best/ui/screens/home_tabs/home_tab.dart';
 import 'package:sudoku_the_best/ui/screens/home_tabs/profile_tab.dart';
+import 'package:sudoku_the_best/ui/widgets/add_friend_dialog.dart';
 import 'package:sudoku_the_best/ui/widgets/duel_mode_dialog.dart';
 import 'package:sudoku_the_best/ui/widgets/play_mode_dialog.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Player? initialPlayer;
+
+  const HomePage({super.key, this.initialPlayer});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,25 +22,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  Player? currentPlayer;
-  List<Player> friends = [];
+  late Player? currentPlayer;
 
   @override
   void initState() {
     super.initState();
-    _loadPlayer();
+    if (widget.initialPlayer != null) {
+      currentPlayer = widget.initialPlayer;
+    } else {
+      _loadPlayer();
+    }
   }
 
   Future<void> _loadPlayer() async {
     final repository = PlayerRepository();
     final player = await repository.loadPlayerById("p1"); 
-
-    if (player != null) {
-      final friendPlayers = await repository.loadPlayersByIds(player.friendIds);
-  
+    if (player != null) {  
       setState(() { 
         currentPlayer = player;
-        friends = friendPlayers;
       });
     }    
   }
@@ -58,9 +59,7 @@ class _HomePageState extends State<HomePage> {
     if (resultData == null || currentPlayer == null) return;
     
     switch(resultData.result) {
-      case GameResult.quit:
-        print('QUIT');
-        
+      case GameResult.quit:        
         break;
 
         case GameResult.completed:
@@ -87,21 +86,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _updateProfileAfterGame(Difficulty difficulty, bool isWin, int elapsedSeconds) {
-    final profile = currentPlayer!.profile;
-
     setState(() {
-      profile.gamesPlayed[difficulty] = (profile.gamesPlayed[difficulty] ?? 0) + 1;
-
-      if (isWin) {
-        profile.gamesCompleted[difficulty] = (profile.gamesCompleted[difficulty] ?? 0) + 1;
-
-        final bestTime = profile.bestTimes[difficulty] ?? 0;
-        if (bestTime == 0 || elapsedSeconds < bestTime) {
-          profile.bestTimes[difficulty] = elapsedSeconds;
-        }
-      }
+      currentPlayer!.profile.updateAfterGame(
+        difficulty: difficulty,
+        isWin: isWin,
+        elapsedSeconds: elapsedSeconds,
+      );
     });
   }
+
+  Future<void> handleAddFriend() async {
+    final name = await showAddFriendDialog(context); 
+    if (name != null && currentPlayer != null) {
+      try {
+        final updatedPlayer = await currentPlayer!.addFriend(name);
+
+        setState(() {
+          currentPlayer = updatedPlayer; 
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {  
@@ -117,7 +127,7 @@ class _HomePageState extends State<HomePage> {
         onPlayDuel: _handlePlayDuel,
         player: currentPlayer!
       ),
-      FriendTab(friends: friends),
+      FriendTab(friends: currentPlayer!.friends, onAddFriendClick: handleAddFriend),
       ProfileTab(player: currentPlayer!)
     ];
 

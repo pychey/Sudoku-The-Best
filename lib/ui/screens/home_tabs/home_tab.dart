@@ -23,11 +23,12 @@ class HomeTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               PlayerAvatar(username: player.username, showOnline: true),
-              const SizedBox(width: 12),
+              const SizedBox(height: 12),
               Text(
                 player.username, 
                 style: const TextStyle(
@@ -35,35 +36,8 @@ class HomeTab extends StatelessWidget {
                   fontWeight: FontWeight.bold
                 )
               ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topRight, 
-                  child: IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {},
-                  ),
-                ),
-              ),
             ],
           ),
-          const SizedBox(height: 24),
-          // Expanded(
-          //   flex: 1, 
-          //   child: Center(
-          //     child: Card(
-          //       // elevation: 4,
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(16),
-          //       ),
-          //       child: Container(
-          //         width: 180,
-          //         height: double.infinity,
-          //         alignment: Alignment.center,
-          //         child: SizedBox()
-          //       ),
-          //     ),
-          //   )
-          // ),
           const SizedBox(height: 20),
           Column(
             children: [

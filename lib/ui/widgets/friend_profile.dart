@@ -16,7 +16,6 @@ void showFriendProfile(BuildContext context, Player friend) {
         initialChildSize: 0.7,
         builder: (_, controller) {
           return Container(
-            padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -26,17 +25,19 @@ void showFriendProfile(BuildContext context, Player friend) {
               child: Column(
                 children: [
                   ProfileTab(player: friend),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 48,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                    onPressed: () => showPlayModeDialog(context), 
-                    child: const Text(
-                      'Challenge',
-                    )
+                  Padding(
+                    padding: EdgeInsets.only(right: 16, left: 16, bottom: 16),
+                      child: SizedBox(
+                      height: 48,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => showPlayModeDialog(context), 
+                        child: const Text(
+                          'Challenge',
+                        )
+                      ),
+                    ),
                   ),
-                  )
                 ],
               )
             ),

@@ -6,13 +6,14 @@ import '../../widgets/play_mode_dialog.dart';
 
 class FriendTab extends StatelessWidget {
   final List<Player> friends;
+  final VoidCallback onAddFriendClick;
 
-  const FriendTab({super.key, required this.friends});
+  const FriendTab({super.key, required this.friends, required this.onAddFriendClick});
 
   @override
   Widget build(BuildContext context) {
     if (friends.isEmpty) {
-      return const _EmptyFriendsState();
+      return _EmptyFriendsState(onAddFriendClick: onAddFriendClick);
     }
 
     return Column(
@@ -31,8 +32,7 @@ class FriendTab extends StatelessWidget {
               ),
               const Expanded(child: SizedBox()),
               ElevatedButton(
-                onPressed: () {
-                },
+              onPressed: onAddFriendClick,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFB5B9C2), 
                   foregroundColor: const Color(0xFF605D7C), 
@@ -59,26 +59,27 @@ class FriendTab extends StatelessWidget {
             itemBuilder: (context, index) {
               final friend = friends[index];
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: ListTile(
-                  key: ValueKey(friend.playerId),
-                  leading: PlayerAvatar(
-                    username: friend.username,
-                    radius: 22,
-                    showOnline: true,
-                  ),
-                  title: Text(
-                    friend.username,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  trailing: ElevatedButton(
-                    onPressed: () => showPlayModeDialog(context),
-                    child: const Text('Challenge'),
-                  ),
-                  
-                  onTap: () => showFriendProfile(context, friend),
+              return ListTile(
+                key: ValueKey(friend.playerId),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
                 ),
+                leading: PlayerAvatar(
+                  username: friend.username,
+                  radius: 22,
+                  showOnline: true,
+                ),
+                title: Text(
+                  friend.username,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: ElevatedButton(
+                  onPressed: () => showPlayModeDialog(context),
+                  child: const Text('Challenge'),
+                ),
+                
+                onTap: () => showFriendProfile(context, friend),
               );
             },
           ),
@@ -89,21 +90,23 @@ class FriendTab extends StatelessWidget {
 }
 
 class _EmptyFriendsState extends StatelessWidget {
-  const _EmptyFriendsState();
+  final VoidCallback onAddFriendClick;
+
+  const _EmptyFriendsState({required this.onAddFriendClick});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.people_outline,
             size: 64,
             color: Colors.grey,
           ),
-          SizedBox(height: 12),
-          Text(
+          const SizedBox(height: 12),
+          const Text(
             'No friends yet',
             style: TextStyle(
               fontSize: 16,
@@ -111,14 +114,29 @@ class _EmptyFriendsState extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
-          SizedBox(height: 4),
-          Text(
+          const SizedBox(height: 4),
+          const Text(
             'Add friends to play together',
             style: TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: onAddFriendClick,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFB5B9C2),
+              foregroundColor: const Color(0xFF605D7C),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            child: const Text(
+              '+ Add',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
     );
   }
 }
-

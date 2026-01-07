@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_the_best/utils/sudoku_color.dart';
 
 class PlayerAvatar extends StatelessWidget {
   final String username;
@@ -16,35 +17,29 @@ class PlayerAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderWidth = radius * 0.09;
-    final statusSize = radius * 0.45;
+    final borderWidth = radius * 0.06;
+    final statusSize = radius * 0.55;
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
-          padding: EdgeInsets.all(borderWidth),
-          decoration: const BoxDecoration(
-            color: Color(0XFF5A7ACD),
-            shape: BoxShape.circle,
-          ),
-          child: CircleAvatar(
-            radius: radius,
-            backgroundColor: const Color(0XFFAFC0F0),
-            child: Text(
-              username.isNotEmpty ? username[0].toUpperCase() : '?',
-              style: TextStyle(
-                fontSize: radius * 0.85,
-                fontWeight: FontWeight.w500,
-              ),
+        CircleAvatar(
+          radius: radius,
+          backgroundColor: SudokuColors.avatarBackground,
+          child: Text(
+            username.isNotEmpty ? username[0].toUpperCase() : '?',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: radius * 0.85,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
 
         if (showOnline)
           Positioned(
-            bottom: borderWidth * 0.3,
-            right: borderWidth * 0.3,
+            bottom: 0,
+            right: 0,
             child: Container(
               width: statusSize,
               height: statusSize,
