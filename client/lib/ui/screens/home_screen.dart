@@ -3,7 +3,6 @@ import 'package:sudoku_the_best/data/repository/player_repository.dart';
 import 'package:sudoku_the_best/models/game_result_data.dart';
 import 'package:sudoku_the_best/models/game_state.dart';
 import 'package:sudoku_the_best/models/player.dart';
-import 'package:sudoku_the_best/models/player_profile.dart';
 import 'package:sudoku_the_best/ui/screens/matchmaking_screen/match_making_screen.dart';
 import 'package:sudoku_the_best/utils/socket_service.dart'; 
 import 'package:sudoku_the_best/ui/screens/game_screen/solo_game_screen.dart';
