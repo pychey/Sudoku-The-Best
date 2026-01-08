@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_the_best/models/game_state.dart';
 import 'package:sudoku_the_best/models/player.dart';
 import 'package:sudoku_the_best/models/sudoku_board.dart';
+import 'package:sudoku_the_best/ui/screens/matchmaking_screen/match_making_screen.dart';
 import 'package:sudoku_the_best/utils/socket_service.dart';
 import 'package:sudoku_the_best/utils/sudoku_color.dart';
 import 'package:sudoku_the_best/ui/widgets/custom_info_tile.dart';
@@ -125,7 +126,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen> {
 
     socket.onOpponentDisconnected((data) {
       gameState.stopTimer();
-      showOpponentDisconnectedDialog(data['message']);
+      showGameOverDialog(isWinner: true, winnerUsername: currentPlayer.username, reason: 'Opponent Disconnected');
     });
     
     socket.onOpponentLeave((data) {
@@ -141,8 +142,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen> {
 
   void handleLeaveGame() {
     socket.leaveGame();
-    Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   void onCellTap(int row, int col) {
@@ -596,9 +596,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     child: const Text('Home'),
                   ),
@@ -607,47 +605,19 @@ class _OnlineGameScreenState extends State<OnlineGameScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => MatchMakingScreen(
+                            difficulty: widget.difficulty,
+                            currentPlayer: currentPlayer,
+                          ),
+                        ),
+                      );
                     },
                     child: const Text('Play Again'),
                   ),
                 ),
               ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showOpponentDisconnectedDialog(String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Opponent Disconnected',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: SudokuColors.textColor),
-            textAlign: TextAlign.center,
-          ),
-          content: Text(
-            message,
-            style: const TextStyle(fontSize: 16, color: SudokuColors.textColor),
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
             ),
           ],
         );
